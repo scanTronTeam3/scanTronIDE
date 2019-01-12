@@ -1,4 +1,4 @@
-class JavaFile //change
+class JavaFile //change2
 {
     private String name;
 
