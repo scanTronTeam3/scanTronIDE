@@ -4,7 +4,7 @@ class JavaFile //change4
 
     public JavaFile (String n)
     {
-        name = n;
+        name = n;//test
     }
     
     public String getName()
