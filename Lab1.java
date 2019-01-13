@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 class Lab1
 {
-    public static void main (String [] args) //frick
+    public static void main(String[] args) // frick
     {
         Scanner scanTron = new Scanner(System.in);
         Project [] projectList = new Project [1]; 
@@ -12,7 +12,7 @@ class Lab1
         while (true)
         {
             System.out.print("Menu: \n-----\n");
-            System.out.print("\t1 - Create Projectn\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
+            System.out.print("\t1 - Create Project\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
             System.out.print("Choose an option. (0 to quit)\n\n");
 
             System.out.print("->");
@@ -32,7 +32,7 @@ class Lab1
                         projectList[numOfProject] = new Project(scanTron.nextLine());
                     }
                     numOfProject++;
-                    System.out.print("Project created. Hit any key.\n");
+                    System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
                 case 2:
@@ -54,7 +54,7 @@ class Lab1
                             p.addFile(file);
                     }
 
-                    System.out.print("File added. Hit Enter.\n");
+                    System.out.print("\nFile added. Hit Enter.\n");
                     scanTron.nextLine();
                     break;
                 case 3:
@@ -65,22 +65,28 @@ class Lab1
                     {
                         System.out.print("\t" + p.getName() + "\n");
                     }
-                    System.out.print("->\n");
+                    System.out.print("->");
                     String targetName = scanTron.nextLine();
                     for (Project p : projectList)
                     {
                         if (targetName.equals(p.getName()))
                         {
-                            System.out.print("Project - "+p.getName()+"\n----------\n");
-                            for (JavaFile f : p.getFileList())
-                                System.out.print("\tFile - " + f.getName() + "\n");
+                            if (Arrays.toString(p.getFileList()).equals("[null]"))
+                                System.out.print("Project empty.\n");
+                            else
+                            {
+                                System.out.print("\nProject - "+p.getName()+"\n----------\n");
+                                for (String f : p.getFileNames())
+                                    System.out.print("\tFile - " + f + "\n");
+                            }
                         }
                     }
-                    System.out.print("Hit Enter.\n");
+                    System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
 
                 case 0:
+                    //quit
                     System.exit(0);
             }
         }
