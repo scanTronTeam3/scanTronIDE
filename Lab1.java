@@ -12,7 +12,7 @@ class Lab1
         while (true)
         {
             System.out.print("Menu: \n-----\n");
-            System.out.print("\t1 - Create Projectn\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
+            System.out.print("\t1 - Create Project\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
             System.out.print("Choose an option. (0 to quit)\n\n");
 
             System.out.print("->");
@@ -75,7 +75,7 @@ class Lab1
                                 System.out.print("Project empty.\n");
                             else
                             {
-                                System.out.print("Project - "+p.getName()+"\n----------\n");
+                                System.out.print("\nProject - "+p.getName()+"\n----------\n");
                                 for (String f : p.getFileNames())
                                     System.out.print("\tFile - " + f + "\n");
                             }
