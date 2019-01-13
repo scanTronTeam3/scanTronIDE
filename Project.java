@@ -1,5 +1,4 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Scanner; 
@@ -33,6 +32,8 @@ class Project
             files[numOfFiles] = file;
         }
         numOfFiles++;
+
+        writeConfig();
     }
 
     public JavaFile [] getFileList()
@@ -51,6 +52,22 @@ class Project
         }
 
         return fileNames;
+    }
+
+    private void writeConfig()
+    {
+        String config = "";
+        for (JavaFile f : files)
+            config += (f.getName() + "\n");
+        config = config.substring(0, config.length()-1);
+        System.out.print(config);
+
+        try
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(name+"/STIConfig.txt"));
+            writer.write(config);
+            writer.close();
+        }catch (Exception e){}
     }
 
     private void initProject() 
