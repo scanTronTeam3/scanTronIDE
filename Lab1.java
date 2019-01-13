@@ -32,7 +32,7 @@ class Lab1
                         projectList[numOfProject] = new Project(scanTron.nextLine());
                     }
                     numOfProject++;
-                    System.out.print("Hit any key.\n");
+                    System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
                 case 2:
@@ -54,7 +54,7 @@ class Lab1
                             p.addFile(file);
                     }
 
-                    System.out.print("File added. Hit Enter.\n");
+                    System.out.print("\nFile added. Hit Enter.\n");
                     scanTron.nextLine();
                     break;
                 case 3:
@@ -81,7 +81,7 @@ class Lab1
                             }
                         }
                     }
-                    System.out.print("Hit any key.\n");
+                    System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
 
