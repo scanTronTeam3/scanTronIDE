@@ -65,10 +65,15 @@ class Project
 
             Should produce a file with each line being a file name/path.
             */
+
         String config = "";
-        for (JavaFile f : files) //add each file in project's file list to a string, separated by '\n'
+
+        //add each file in project's file list to a string, separated by '\n'
+        for (JavaFile f : files) 
             config += (f.getName() + "\n");
-        config = config.substring(0, config.length()-1); //remove last '\n' from string so there isn't an empty line in config file
+
+        //remove last '\n' from string so there isn't an empty line in config file
+        config = config.substring(0, config.length()-1); 
 
         //write config string to config file
         try  
@@ -88,18 +93,18 @@ class Project
 
         //the block below creates a file object, and creates a folder and config file, if they don't
         //already exist
-        boolean existed = false;
+        boolean didntExist = false;
         File file = new File(name);
         file.mkdirs();
         file = new File(name+"/STIConfig.txt");
-        try{existed = file.createNewFile();}catch(Exception e){}finally {}
+        try{didntExist = file.createNewFile();}catch(Exception e){}finally {}
         
-        if (!existed)
+        //if the project already exists, load it
+        if (!didntExist)
         {
             //load the file paths from the already existing config file
             try
             {
-                System.out.print("hi");
                 Scanner scan = new Scanner(file);
                 while(scan.hasNextLine())
                 {
@@ -116,9 +121,9 @@ class Project
             catch(Exception e){}
         }
 
-        if (existed)
-            System.out.print("\tProject loaded.\n");
-        else 
+        if (didntExist) 
             System.out.print("\tProject initialized.\n");
+        else 
+            System.out.print("\tProject loaded.\n");
     }
 }

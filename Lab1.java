@@ -1,23 +1,31 @@
+/*
+    CS1083LAB
+    scanTronIDE (STI)
+    Kayden Rice, Paul Hayes, Joseph Long
+    */
+
 import java.util.Scanner;
 import java.util.Arrays;
 
 class Lab1
 {
-    public static void main(String[] args) // frick
+
+    public static void main(String[] args)
     {
-        Scanner scanTron = new Scanner(System.in);
+        Scanner scanTron = new Scanner(System.in); //scanTron (!!!important!!!)
         Project [] projectList = new Project [1]; 
         int numOfProject = 0;
 
         while (true)
         {
+            //output menu every loop
             System.out.print("Menu: \n-----\n");
             System.out.print("\t1 - Create Project\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
             System.out.print("Choose an option. (0 to quit)\n\n");
 
+            //prompt user
             System.out.print("->");
 
-            //clear console for cleanliness 
             switch (scanTron.nextInt())
             {
                 case 1:
@@ -33,6 +41,7 @@ class Lab1
                         projectList[numOfProject] = new Project(scanTron.nextLine());
                     }
                     numOfProject++;
+
                     System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
@@ -64,21 +73,25 @@ class Lab1
 
                 case 3:
                     scanTron.nextLine(); 
+
                     //print out files in specific project
                     System.out.print("Select Project:\n----------\n");
+
                     for (Project p : projectList)//print projects
                     {
                         System.out.print("\t" + p.getName() + "\n");
                     }
-
+                    
+                    //get name of project from user
                     System.out.print("->");
-                    String targetName = scanTron.nextLine();//get name of project from user
-
+                    String targetName = scanTron.nextLine();
+                    
                     for (Project p : projectList)
                     {
-                        if (targetName.equals(p.getName()))//name of project equals inputted name 
+                        //name of project equals inputted name 
+                        if (targetName.equals(p.getName()))
                         {
-                            //check if project file list is empty
+                            //check if project file list is empty, prevent null point error
                             if (Arrays.toString(p.getFileList()).equals("[null]"))
                                 System.out.print("Project empty.\n");
                             else
@@ -89,6 +102,7 @@ class Lab1
                             }
                         }
                     }
+
                     System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
@@ -97,6 +111,9 @@ class Lab1
                     //quit
                     System.exit(0);
             }
+
+            //clear console for cleanliness 
+            try{Runtime.getRuntime().exec("cls");}catch (Exception e){}
         }
     }
 }
