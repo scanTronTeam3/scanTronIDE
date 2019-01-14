@@ -33,7 +33,7 @@ class Project
         }
         numOfFiles++;
 
-        writeConfig();
+        writeConfig();//save change to projects config
     }
 
     public JavaFile [] getFileList()
@@ -43,6 +43,9 @@ class Project
 
     public String [] getFileNames()
     {
+        /*
+            This method creates and returns an array of names corisponding to the files array.
+            */
         String [] fileNames = new String [files.length];
         int x = 0;
         for (JavaFile f : files)
@@ -56,13 +59,19 @@ class Project
 
     private void writeConfig()
     {
-        String config = "";
-        for (JavaFile f : files)
-            config += (f.getName() + "\n");
-        config = config.substring(0, config.length()-1);
-        System.out.print(config);
+        /*
+            This method basically saves the config file in the event of a change to the file list, ect., of
+            project.
 
-        try
+            Should produce a file with each line being a file name/path.
+            */
+        String config = "";
+        for (JavaFile f : files) //add each file in project's file list to a string, separated by '\n'
+            config += (f.getName() + "\n");
+        config = config.substring(0, config.length()-1); //remove last '\n' from string so there isn't an empty line in config file
+
+        //write config string to config file
+        try  
         {
             BufferedWriter writer = new BufferedWriter(new FileWriter(name+"/STIConfig.txt"));
             writer.write(config);
@@ -72,6 +81,13 @@ class Project
 
     private void initProject() 
     {
+        /*
+            This method creates and/or loads into memory the config file made to contain the project's
+            files. 
+            */
+
+        //the block below creates a file object, and creates a folder and config file, if they don't
+        //already exist
         boolean existed = false;
         File file = new File(name);
         file.mkdirs();
