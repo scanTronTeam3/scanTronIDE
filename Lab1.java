@@ -18,12 +18,12 @@ class Lab1
 
         while (true)
         {
-            //output menu every loop
+            // output menu every loop
             System.out.print("Menu: \n-----\n");
             System.out.print("\t1 - Create Project\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n");
             System.out.print("Choose an option. (0 to quit)\n\n");
 
-            //prompt user
+            // prompt user
             System.out.print("->");
 
             switch (scanTron.nextInt())
@@ -74,24 +74,25 @@ class Lab1
                 case 3:
                     scanTron.nextLine(); 
 
-                    //print out files in specific project
+                    // print out files in specific project
                     System.out.print("Select Project:\n----------\n");
 
-                    for (Project p : projectList)//print projects
+                    // print projects
+                    for (Project p : projectList)
                     {
                         System.out.print("\t" + p.getName() + "\n");
                     }
                     
-                    //get name of project from user
+                    // get name of project from user
                     System.out.print("->");
                     String targetName = scanTron.nextLine();
                     
                     for (Project p : projectList)
                     {
-                        //name of project equals inputted name 
+                        // name of project equals inputted name 
                         if (targetName.equals(p.getName()))
                         {
-                            //check if project file list is empty, prevent null point error
+                            // check if project file list is empty, prevent null point error
                             if (Arrays.toString(p.getFileList()).equals("[null]"))
                                 System.out.print("Project empty.\n");
                             else
@@ -106,14 +107,15 @@ class Lab1
                     System.out.print("\nHit any key.\n");
                     scanTron.nextLine();
                     break;
-
+                // case 4:
+                    // try{Runtime.getRuntime().exec("cmd.exe python text-editor.py " + projectList[0].getFileList()[0]);}catch (Exception e){System.out.print(e);}    
                 case 0:
                     //quit
                     System.exit(0);
             }
 
             //clear console for cleanliness 
-            try{Runtime.getRuntime().exec("cls");}catch (Exception e){}
+            try{Runtime.getRuntime().exec("cls");}catch (Exception e){System.out.print(e);}
         }
     }
 }
