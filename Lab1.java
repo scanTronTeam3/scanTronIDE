@@ -15,7 +15,7 @@ class Lab1
         while (true)
         {
             System.out.print("Menu: \n-----\n");
-            System.out.print("\t1 - Create Projectn\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n\t4 - Set Working Project\n\t5 - Print Project\n\t6 - Compile\n");
+            System.out.print("\t1 - Create Project\n\t2 - Add File to Project\n\t3 - Print List of Files in Project\n\t4 - Set Working Project\n\t5 - Print Project\n\t6 - Compile\n");
             System.out.print("Choose an option. (0 to quit)\n\n");
 
             System.out.print("->");
@@ -105,6 +105,7 @@ class Lab1
                         scanTron.nextLine();
                     }
                     break;
+
                 case 0:
                     System.exit(0);
             }
