@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import java.util.Arrays;
 import java.lang.*;
 
@@ -101,8 +100,7 @@ class Lab1
                         Runtime r = Runtime.getRuntime();
                         Process p = r.exec("javac " + projectList[workingProjectIndex].getName() + "/" + j.getName());
                         p.waitFor();
-                        System.out.print(j.getName() + " javac " + projectList[workingProjectIndex].getName() + "/" + j.getName());
-                        scanTron.nextLine();
+                        System.out.print("compiling " + j.getName() + ": javac " + projectList[workingProjectIndex].getName() + "/" + j.getName());
                     }
                     break;
 
