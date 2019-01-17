@@ -17,13 +17,14 @@ class Lab1
 
             System.out.print("->");
 
-            //clear console for cleanliness 
             switch (scanTron.nextInt())
             {
                 case 1:
                     //create project
                     scanTron.nextLine();
+
                     System.out.print("Enter project name?\n->");
+
                     if (numOfProject < projectList.length)
                         projectList[numOfProject] = new Project(scanTron.nextLine());
                     else 
@@ -32,11 +33,13 @@ class Lab1
                         projectList[numOfProject] = new Project(scanTron.nextLine());
                     }
                     numOfProject++;
+
                     System.out.print("Project created. Hit any key.\n");
                     scanTron.nextLine();
                     break;
                 case 2:
                     scanTron.nextLine();
+
                     //add file to project
                     System.out.print("Name of file:\n->");
                     JavaFile file = new JavaFile (scanTron.nextLine());
@@ -46,7 +49,9 @@ class Lab1
                     {
                         System.out.print("\t" + p.getName() + "\n");
                     }
+
                     System.out.print("->");
+
                     String targetPName = scanTron.nextLine();
                     for (Project p : projectList)
                     {
@@ -59,13 +64,16 @@ class Lab1
                     break;
                 case 3:
                     scanTron.nextLine(); 
+
                     //print out files in specific project
                     System.out.print("Select Project:\n----------\n");
                     for (Project p : projectList)
                     {
                         System.out.print("\t" + p.getName() + "\n");
                     }
+
                     System.out.print("->\n");
+
                     String targetName = scanTron.nextLine();
                     for (Project p : projectList)
                     {
@@ -76,6 +84,7 @@ class Lab1
                                 System.out.print("\tFile - " + f.getName() + "\n");
                         }
                     }
+
                     System.out.print("Hit Enter.\n");
                     scanTron.nextLine();
                     break;
