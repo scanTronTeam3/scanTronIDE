@@ -16,6 +16,8 @@ class JavaFile
 
         File file = new File(projectN + "/" + name);
         try{file.createNewFile();}catch(Exception e){}finally {}
+
+        readFile();
     }
     
     public String getName()
@@ -25,20 +27,24 @@ class JavaFile
 
     public void readFile()
     {
+        contents = new String [1];
         try
         {
             File file = new File (projectName + "/" + name);
             Scanner scan = new Scanner(file);
 
             int n = 0;
+            String st = "";
 
+            contents = new String [1];
             while (scan.hasNextLine())
             {
-                String st = scan.nextLine();
-                contents[n]  = st;
+                st = scan.nextLine();
+                contents[n] = st;
                 n++;
+                contents = Arrays.copyOf(contents, n+1);
             }
-            contents = Arrays.copyOf(contents, n);
+
         } catch (Exception e) {}
     }
 
