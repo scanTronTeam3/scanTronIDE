@@ -36,11 +36,11 @@ class JavaFile
             int n = 0;
             String st = "";
 
-            contents = new String [1];
             while (scan.hasNextLine())
             {
                 st = scan.nextLine();
                 contents[n] = st;
+                System.out.print(st);
                 n++;
                 contents = Arrays.copyOf(contents, n+1);
             }
