@@ -6,17 +6,18 @@ class JavaFile
 {
     private String projectName;
     private String name;
-    private String [] contents;
+    private String path;
+    private String contents;
     
     public JavaFile (String n, String projectN)
     {
         projectName = projectN;
-        name = n;
-        contents = new String [1000];
+        name = n.substring(n.lastIndexOf("\\") + 1);
+        path = n;
+        contents = "";
 
         File file = new File(projectN + "/" + name);
         try{file.createNewFile();}catch(Exception e){}finally {}
-
         readFile();
     }
     
@@ -25,9 +26,13 @@ class JavaFile
         return name;
     }
 
+    public String getPath()
+    {
+        return path;
+    }
+
     public void readFile()
     {
-        contents = new String [1];
         try
         {
             File file = new File (name);
@@ -35,36 +40,32 @@ class JavaFile
 
             int n = 0;
             String st = "";
-
+            
 
             while (scan.hasNextLine())
             {
-                st = scan.nextLine();
-                contents[n] = st;
+                st += scan.nextLine()+"\n";  
                 n++;
-                contents = Arrays.copyOf(contents, n+1);
             }
-            contents = Arrays.copyOf(contents, contents.length-1);
+            contents = st;
+
+            scan.close();
 
         } catch (Exception e) {}
     }
 
     public String getContents()
     {
-        String content = "";
-        for (String line : contents)
-        {
-            content+=line+"\n";
-        }
-        return content;
+        return contents;
     }
 
     public String compileFile()
     {
         Scanner processOut = new Scanner ("hello sweety");
+        String command = "javac \"" + path +"\"";
         try
         {
-            Process p = Runtime.getRuntime().exec("javac " + name);
+            Process p = Runtime.getRuntime().exec(command);
             processOut = new Scanner(p.getErrorStream());
         }
         catch(Exception e){
@@ -74,26 +75,27 @@ class JavaFile
         while (processOut.hasNextLine())
             errorStr+=processOut.nextLine()+"\n";
 
-        return errorStr;
+        return command+"\n"+errorStr;
     }
 
-    public void saveFile(String c)
+    public void saveFile(String c) throws IOException
     {
-        try 
-        {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(name));
-            writer.write(c);
-            writer.close();
-        }catch(Exception e){}
+        contents = c;
+        BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+        writer.write(contents);
+        writer.close();
     }
 
     public String runFile()
     {
-        String fileName = name;
+        String fileName = path;
         fileName = fileName.substring(0, fileName.indexOf(".java"));
-        String command = "java " + fileName;
-        String output = "";
 
+        String className = fileName.substring(fileName.lastIndexOf("\\") + 1);
+        String pathToClass = fileName.substring(0, fileName.lastIndexOf("\\"));
+
+        String command = "java -cp \"" + pathToClass + "\"; " + className;
+        String output = "";
         try{
             Process p = Runtime.getRuntime().exec(command);
             Scanner processOut = new Scanner(p.getInputStream());
@@ -101,7 +103,7 @@ class JavaFile
                 output += processOut.nextLine() + "\n";
         }catch(Exception e){}
 
-        return output;
+        return command+"\n"+output;
     }
 
 }
