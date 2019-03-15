@@ -9,17 +9,30 @@ class JavaFile
     private String path;
     private String contents;
     
-    public JavaFile (String n, String projectN)
+    public JavaFile (String n, String projectN, boolean newFile)
     {
         projectName = projectN;
         name = n.substring(n.lastIndexOf("\\") + 1);
         path = n;
-        contents = "";
 
+        if (newFile)
+        {
+            contents = "class "+name.substring(0, name.indexOf("."))+"\n{\n\tpublic static void main (String [] args)\n\t{\n\n\t}\n}";
+            try
+            {
+                saveFile(contents);
+            }
+            catch(Exception e){}
+        }
+        else
+            contents = "";
+
+        
         File file = new File(projectN + "/" + name);
         try{file.createNewFile();}catch(Exception e){}finally {}
         readFile();
     }
+    
     
     public String getName()
     {
@@ -35,7 +48,7 @@ class JavaFile
     {
         try
         {
-            File file = new File (name);
+            File file = new File (path);
             Scanner scan = new Scanner(file);
 
             int n = 0;
@@ -48,7 +61,6 @@ class JavaFile
                 n++;
             }
             contents = st;
-
             scan.close();
 
         } catch (Exception e) {}
@@ -81,7 +93,7 @@ class JavaFile
     public void saveFile(String c) throws IOException
     {
         contents = c;
-        BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
         writer.write(contents);
         writer.close();
     }

@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Observable;
-import javafx.beans.value.ObservableValue;
 
 class Project
 {

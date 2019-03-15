@@ -13,22 +13,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.text.TextFlow;
 import javafx.scene.control.ToolBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogEvent;
-import javafx.geometry.NodeOrientation;
 
 import javafx.scene.layout.*;
 import javafx.event.*;
-import javafx.geometry.Orientation;
 import javafx.stage.FileChooser;
-import javafx.collections.*;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.beans.value.ObservableValue;
 
-import java.util.Optional;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,8 +33,8 @@ public class LabFX extends Application
         declare Objects
         */
     MenuBar menuBar;
-    Menu fileMenu, editMenu;   
-    MenuItem newProject, newFile, compileB, runB;
+    Menu fileMenu, editMenu, prefMenu;   
+    MenuItem newProject, addFile, newFile, compileB, runB, editCommands;
 
     ToolBar toolBar;
     Button compileButton, runButton, saveButton, refreshButton;
@@ -50,9 +44,9 @@ public class LabFX extends Application
     TextArea compileOutput;
     
     TabPane fileView;
-    ArrayList<String> tabIDs; //list of all open tabIds
+    ArrayList<String> tabIDs; //list of all open tabIds, equal to a javafile's path var
     ArrayList<TextArea> fileTextAreas; //text areas for tabs
-    String selectedTabID; //currently selected tab
+    String selectedTabID; //currently selected tab, equal to a javafile's path var
 
     Project project; //project class object
 
@@ -79,30 +73,36 @@ public class LabFX extends Application
         //set functions
         compileButton.setOnAction(this::compile);
         runButton.setOnAction(this::runFile);
-        saveButton.setOnAction(this::saveFile);
+        saveButton.setOnAction(this::saveFileEvent);
         refreshButton.setOnAction(this::refreshFiles);
         
         menuBar = new MenuBar();
         fileMenu = new Menu("File");
         editMenu = new Menu("Edit");
+        prefMenu = new Menu("Preferences");
         
         newProject = new MenuItem("Create Project");
-        newFile = new MenuItem("Open File");
+        addFile = new MenuItem("Open File");
+        newFile = new MenuItem("New File");
         compileB = new MenuItem("Compile");
+        editCommands = new MenuItem("Edit Commands");
         
         //set functions
         newProject.setOnAction(this::createProject);
-        newFile.setOnAction(this::addFile);
+        addFile.setOnAction(this::addFile);
+        newFile.setOnAction(this::newFile);
         compileB.setOnAction(this::compile);
         /*
             grey out this button until a project is created
             */
         newFile.setDisable(true);
+        addFile.setDisable(true);
 
         //add buttons to menu bar
         editMenu.getItems().add(compileB);
-        fileMenu.getItems().addAll(newProject, newFile);
+        fileMenu.getItems().addAll(newProject, addFile, newFile);
         menuBar.getMenus().addAll(fileMenu, editMenu); 
+        prefMenu.getMenus().addAll(editCommands);
         
         explorerView = new ListView<Label>();
         explorerView.getSelectionModel().selectedItemProperty().addListener(this::handleNewTab);
@@ -160,12 +160,14 @@ public class LabFX extends Application
                     //remove ID from arraylist on close
                     t.setOnCloseRequest(event ->
                     {
+                        saveFile();
+                        
                         for(int x = 0; x < tabIDs.size(); x++)
                         {
                             if (tabIDs.get(x).equals(t.getId()))
-                            tabIDs.remove(x);
-                            if (fileTextAreas.get(x).getId().equals(t.getId()));
-                            fileTextAreas.remove(x);
+                                tabIDs.remove(x);
+                            // if (fileTextAreas.get(x).getId().equals(t.getId()));
+                            //     fileTextAreas.remove(x);
                         }
                     });
                     
@@ -180,6 +182,7 @@ public class LabFX extends Application
         if (newValue != null)
         {
             selectedTabID = newValue.getId();
+            System.out.print("sT:"+selectedTabID);
             
             //debug:
             String out = "\nOpened tabs:\n";
@@ -198,7 +201,9 @@ public class LabFX extends Application
         String name = d.showAndWait().get();
         project = new Project(name);
         scanTron.setTitle("ScanTron IDE " + name); 
-        newFile.setDisable(false);
+
+        newFile.setDisable(false);//enable adding files
+        addFile.setDisable(false);//enable adding files
     }
     
     public void refreshFiles(ActionEvent e)
@@ -208,32 +213,45 @@ public class LabFX extends Application
         {
             for (JavaFile f : project.getFiles())
             {
-                if (f.getName() == t.getId())
-                t.setText(f.getContents());
+                if (f.getPath() == t.getId())
+                    t.setText(f.getContents());
             }
         }
     }
     
-    public void saveFile(ActionEvent e)
+    public void saveFileEvent(ActionEvent e)
+    {
+        saveFile();
+    }
+
+    public void saveFile()
     {
         String contents = "";
         for (TextArea t : fileTextAreas)
-        if (t.getId().equals(selectedTabID))
-        contents = t.getText();
+            if (t.getId().equals(selectedTabID))
+                contents = t.getText();
         
         for (JavaFile file : project.getFiles())
         {
-            if (file.getName().equals(selectedTabID))
+            if (file.getPath().equals(selectedTabID))
             {
                 try
                 {
-                    file.saveFile(contents);
+                    if (!file.getContents().equals(contents))
+                    {
+                        Alert saveAlert = new Alert (AlertType.CONFIRMATION, "Save "+file.getName(), ButtonType.OK, ButtonType.NO);
+                        saveAlert.setHeaderText("Save file.");
+                        saveAlert.showAndWait();
+                        ButtonType bt = saveAlert.getResult();
+                        if (bt == ButtonType.OK)
+                            file.saveFile(contents);
+                    }
                 }
                 catch (IOException a)
                 {
                     Alert alert = new Alert(AlertType.ERROR,
-                    a.getMessage(),
-                    ButtonType.OK);
+                        a.getMessage(),
+                        ButtonType.OK);
                     alert.showAndWait();
                 }
             }
@@ -246,7 +264,21 @@ public class LabFX extends Application
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         File selectedFile = fileChooser.showOpenDialog(scanTron);
         
-        JavaFile file = new JavaFile(selectedFile.getAbsolutePath(), project.getName());
+        JavaFile file = new JavaFile(selectedFile.getAbsolutePath(), project.getName(), false);
+        project.addFile(file);
+        explorerView.getItems().add(new Label(file.getName()));
+    }
+
+    public void newFile(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setInitialFileName("gmsayitback");
+        fileChooser.setSelectedExtensionFilter(new ExtensionFilter("JAVA files (*.java)", "*.java"));
+
+        File selectedFile = fileChooser.showSaveDialog(scanTron);
+        
+        JavaFile file = new JavaFile(selectedFile.getAbsolutePath(), project.getName(), true);
         project.addFile(file);
         explorerView.getItems().add(new Label(file.getName()));
     }
@@ -258,7 +290,7 @@ public class LabFX extends Application
         
         for (JavaFile file : project.getFiles())
         {
-            if (file.getName().equals(explorerView.getSelectionModel().getSelectedItem().getText()));
+            if (file.getPath().equals(selectedTabID))
                 out += file.compileFile();
 
         }
@@ -273,13 +305,21 @@ public class LabFX extends Application
 
         for (JavaFile f: project.getFiles())
         {
-            if (f.getName().equals(selectedTabID))
+            if (f.getPath().equals(selectedTabID))
                 out += f.runFile();
         }
 
         compileOutput.setText(out);
 
     }
+
+    // public void editCommandDialog()
+    // {
+    //     TextInputDialog dialog = new TextInputDialog();
+    //     dialog.setHeaderText("Set compile command variable.");
+    //     dialog.setResizable(true);
+    //     dialog.set
+    // }
 
     public static void main(String[] args) 
     {
