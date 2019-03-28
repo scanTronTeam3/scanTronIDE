@@ -79,13 +79,11 @@ public class LabFX extends Application
         menuBar = new MenuBar();
         fileMenu = new Menu("File");
         editMenu = new Menu("Edit");
-        prefMenu = new Menu("Preferences");
         
         newProject = new MenuItem("Create Project");
         addFile = new MenuItem("Open File");
         newFile = new MenuItem("New File");
         compileB = new MenuItem("Compile");
-        editCommands = new MenuItem("Edit Commands");
         
         //set functions
         newProject.setOnAction(this::createProject);
@@ -102,14 +100,13 @@ public class LabFX extends Application
         editMenu.getItems().add(compileB);
         fileMenu.getItems().addAll(newProject, addFile, newFile);
         menuBar.getMenus().addAll(fileMenu, editMenu); 
-        prefMenu.getMenus().addAll(editCommands);
         
         explorerView = new ListView<Label>();
         explorerView.getSelectionModel().selectedItemProperty().addListener(this::handleNewTab);
                 
         //keep track of selected file 
         fileView.getSelectionModel().selectedItemProperty().addListener(this::handleTabSelect);
-
+        
         //define layouts
         BorderPane center = new BorderPane();
         center.setCenter(fileView);

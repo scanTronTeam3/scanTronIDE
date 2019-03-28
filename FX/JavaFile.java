@@ -8,11 +8,13 @@ class JavaFile
     private String name;
     private String path;
     private String contents;
+    private String extention;
     
     public JavaFile (String n, String projectN, boolean newFile)
     {
         projectName = projectN;
         name = n.substring(n.lastIndexOf("\\") + 1);
+        extention = name.substring(name.indexOf(".") + 1);
         path = n;
 
         if (newFile)
@@ -73,21 +75,25 @@ class JavaFile
 
     public String compileFile()
     {
-        Scanner processOut = new Scanner ("hello sweety");
-        String command = "javac \"" + path +"\"";
-        try
+        if (extention.equals("java"))
         {
-            Process p = Runtime.getRuntime().exec(command);
-            processOut = new Scanner(p.getErrorStream());
+            Scanner processOut = new Scanner ("hello sweety");
+            String command = "javac \"" + path +"\"";
+            try
+            {
+                Process p = Runtime.getRuntime().exec(command);
+                processOut = new Scanner(p.getErrorStream());
+            }
+            catch(Exception e){
+                return "Error in compile function.";}
+
+            String errorStr = "";
+            while (processOut.hasNextLine())
+                errorStr+=processOut.nextLine()+"\n";
+
+            return command+"\n"+errorStr;
         }
-        catch(Exception e){
-            return "Error in compile function.";}
-
-        String errorStr = "";
-        while (processOut.hasNextLine())
-            errorStr+=processOut.nextLine()+"\n";
-
-        return command+"\n"+errorStr;
+        return "Cannot compile a non java file.";
     }
 
     public void saveFile(String c) throws IOException
@@ -100,22 +106,26 @@ class JavaFile
 
     public String runFile()
     {
-        String fileName = path;
-        fileName = fileName.substring(0, fileName.indexOf(".java"));
+        if (extention.equals("java"))
+        {
+            String fileName = path;
+            fileName = fileName.substring(0, fileName.indexOf(".java"));
 
-        String className = fileName.substring(fileName.lastIndexOf("\\") + 1);
-        String pathToClass = fileName.substring(0, fileName.lastIndexOf("\\"));
+            String className = fileName.substring(fileName.lastIndexOf("\\") + 1);
+            String pathToClass = fileName.substring(0, fileName.lastIndexOf("\\"));
 
-        String command = "java -cp \"" + pathToClass + "\"; " + className;
-        String output = "";
-        try{
-            Process p = Runtime.getRuntime().exec(command);
-            Scanner processOut = new Scanner(p.getInputStream());
-            while (processOut.hasNextLine())
-                output += processOut.nextLine() + "\n";
-        }catch(Exception e){}
+            String command = "java -cp \"" + pathToClass + "\"; " + className;
+            String output = "";
+            try{
+                Process p = Runtime.getRuntime().exec(command);
+                Scanner processOut = new Scanner(p.getInputStream());
+                while (processOut.hasNextLine())
+                    output += processOut.nextLine() + "\n";
+            }catch(Exception e){}
 
-        return command+"\n"+output;
+            return command+"\n"+output;
+        }
+        return "Cannot run a non java file.";
     }
 
 }
